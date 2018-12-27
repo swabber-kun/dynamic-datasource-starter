@@ -7,7 +7,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -113,10 +112,9 @@ public class DataSourceConfigurer {
     @Bean
     @ConfigurationProperties(prefix = "mybatis")
     public SqlSessionFactoryBean sqlSessionFactoryBean() throws IOException {
+
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        // Here to config mybatis
-        sqlSessionFactoryBean.setTypeAliasesPackage("cn.com.hellowood.dynamicdatasource.mappers");
-        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("mappers/**Mapper.xml"));
+
         // Here is very important, if don't config this, will can't switch datasource
         // put all datasource into SqlSessionFactoryBean, then will autoconfig SqlSessionFactory
         sqlSessionFactoryBean.setDataSource(dynamicDataSource());
