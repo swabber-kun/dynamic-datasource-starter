@@ -16,6 +16,8 @@ buildNumber.properties
 .gradle
 build/
 
+.idea
+
 # Ignore Gradle GUI config
 gradle-app.setting
 build.gradle
