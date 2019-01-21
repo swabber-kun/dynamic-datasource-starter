@@ -7,6 +7,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -26,7 +27,9 @@ public class DataSourceConfigurer {
     /**
      * master DataSource
      *
-     * @return data source
+     * @Primary 注解用于标识默认使用的 DataSource Bean，因为有5个 DataSource Bean，该注解可用于 master
+     * 或 slave DataSource Bean, 但不能用于dynamicDataSource Bean, 否则会产生循环调用
+     * @ConfigurationProperties 注解用于从 application.properties 文件中读取配置，为 Bean 设置属性
      */
     @Bean("master")
     @Primary
@@ -84,30 +87,26 @@ public class DataSourceConfigurer {
         dataSourceMap.put(DataSourceKey.slaveBeta.name(), slaveBeta());
         dataSourceMap.put(DataSourceKey.slaveGamma.name(), slaveGamma());
 
-        // Set master datasource as default
+        // 将 master 数据源作为默认指定的数据源
         dynamicRoutingDataSource.setDefaultTargetDataSource(master());
 
-        // Set master and slave datasource as target datasource
+        // 将 master 和 slave 数据源作为指定的数据源
         dynamicRoutingDataSource.setTargetDataSources(dataSourceMap);
 
-        // To put datasource keys into DataSourceContextHolder to judge if the datasource is exist
+        // 将数据源的 key 放到数据源上下文的 key 集合中，用于切换时判断数据源是否有效
         DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS.addAll(dataSourceMap.keySet());
 
-        // To put slave datasource keys into DataSourceContextHolder to load balance
+        // 将 Slave 数据源的 key 放在集合中，用于轮循
         DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS.addAll(dataSourceMap.keySet());
         DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS.remove(DataSourceKey.master.name());
         return dynamicRoutingDataSource;
     }
 
     /**
-     * Sql session factory bean.
-     * Here to config datasource for SqlSessionFactory
-     * <p>
-     * You need to add @{@code @ConfigurationProperties(prefix = "mybatis")}, if you are using *.xml file,
-     * the {@code 'mybatis.type-aliases-package'} and {@code 'mybatis.mappers-locations'} should be set in
-     * {@code 'application.properties'} file, or there will appear invalid bond statement exception
+     * 配置 SqlSessionFactoryBean
      *
      * @return the sql session factory bean
+     * @ConfigurationProperties 在这里是为了将 MyBatis 的 mapper 位置和持久层接口的别名设置到Bean的属性中，如果没有使用 *.xml 则可以不用该配置，否则将会产生 invalid bond statement 异常
      */
     @Bean
     @ConfigurationProperties(prefix = "mybatis")
@@ -115,14 +114,18 @@ public class DataSourceConfigurer {
 
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 
-        // Here is very important, if don't config this, will can't switch datasource
-        // put all datasource into SqlSessionFactoryBean, then will autoconfig SqlSessionFactory
+        // 配置 MyBatis
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.dynamic.mapper");
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("mappers/**Mapper.xml"));
+
+
+        // 配置数据源，此处配置为关键配置，如果没有将 dynamicDataSource 作为数据源则不能实现切换
         sqlSessionFactoryBean.setDataSource(dynamicDataSource());
         return sqlSessionFactoryBean;
     }
 
     /**
-     * Transaction manager platform transaction manager.
+     * 注入 DataSourceTransactionManager 用于事务管理
      *
      * @return the platform transaction manager
      */
@@ -131,4 +134,3 @@ public class DataSourceConfigurer {
         return new DataSourceTransactionManager(dynamicDataSource());
     }
 }
-

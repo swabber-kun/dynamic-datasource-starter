@@ -25,6 +25,11 @@ public class ProductController {
     private ProductService productService;
 
     /**
+     * 模拟动态配置
+     */
+    public static final boolean useNewConnection = false;
+
+    /**
      * Get product by id
      */
     @GetMapping("/{id}")
