@@ -36,3 +36,12 @@ springboot 动态切换数据的基本思想与实现方法
         为数据源的某个Bean添加@Primary注解，该Bean应当是通过DataSourceBuilder.create().build() 得到的 Bean，
         而不是通过 new AbstractRoutingDataSource 的子类实现的 Bean，
         在本项目中可以是 master() 或 slave() 得到的 DataSource，不能是 dynamicDataSource() 得到的 DataSource
+        
+    (3) @ConfigurationProperties的功能，可以将同类的配置信息自动封装成实体类
+        
+        @Bean
+        @ConfigurationProperties(prefix = "connection")
+        public ConnectionSettings connectionSettings(){
+           return new ConnectionSettings();
+        }
+       
