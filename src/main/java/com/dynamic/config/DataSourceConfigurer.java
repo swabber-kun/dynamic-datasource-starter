@@ -97,8 +97,9 @@ public class DataSourceConfigurer {
         DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS.addAll(dataSourceMap.keySet());
 
         // 将 Slave 数据源的 key 放在集合中，用于轮循
-        DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS.addAll(dataSourceMap.keySet());
         DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS.remove(DataSourceKey.master.name());
+
+        System.out.println(DynamicRoutingDataSource.SLAVE_DATA_SOURCE_KEYS);
         return dynamicRoutingDataSource;
     }
 
