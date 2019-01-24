@@ -1,6 +1,7 @@
 package com.dynamic.config;
 
 import com.dynamic.common.DataSourceKey;
+import com.dynamic.utils.DataSourceManager;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -151,22 +152,22 @@ public class DataSourceConfigurer {
 
         // mapping of thr master datasource
         DynamicDataSource dynamicMasterDataSource = new DynamicDataSource();
-        dynamicMasterDataSource.setDataSource(DataSourceKey.master.name(), master());
+        dynamicMasterDataSource.setAndGetDataSource(DataSourceKey.master.name(), master());
         dataSourceMap.put(DataSourceKey.master.name(), dynamicMasterDataSource);
 
         // mapping of thr slaveAlpha datasource
         DynamicDataSource dynamicSlaveAlphaDataSource = new DynamicDataSource();
-        dynamicSlaveAlphaDataSource.setDataSource(DataSourceKey.slaveAlpha.name(), slaveAlpha());
+        dynamicSlaveAlphaDataSource.setAndGetDataSource(DataSourceKey.slaveAlpha.name(), slaveAlpha());
         dataSourceMap.put(DataSourceKey.slaveAlpha.name(), dynamicSlaveAlphaDataSource);
 
         // mapping of thr slaveBeta datasource
         DynamicDataSource dynamicSlaveBetaDataSource = new DynamicDataSource();
-        dynamicSlaveBetaDataSource.setDataSource(DataSourceKey.slaveBeta.name(), slaveBeta());
+        dynamicSlaveBetaDataSource.setAndGetDataSource(DataSourceKey.slaveBeta.name(), slaveBeta());
         dataSourceMap.put(DataSourceKey.slaveBeta.name(), dynamicSlaveBetaDataSource);
 
         // mapping of thr slaveGamma datasource
         DynamicDataSource dynamicSlaveGammaDataSource = new DynamicDataSource();
-        dynamicSlaveGammaDataSource.setDataSource(DataSourceKey.slaveGamma.name(), slaveGamma());
+        dynamicSlaveGammaDataSource.setAndGetDataSource(DataSourceKey.slaveGamma.name(), slaveGamma());
         dataSourceMap.put(DataSourceKey.slaveGamma.name(), dynamicSlaveGammaDataSource);
 
         // 将 master 数据源作为默认指定的数据源

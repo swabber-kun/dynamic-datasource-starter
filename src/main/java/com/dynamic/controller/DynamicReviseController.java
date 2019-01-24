@@ -27,6 +27,14 @@ public class DynamicReviseController {
     @Autowired
     private DataSourceRefresher dataSourceRefresher;
 
+    /**
+     * curl -X GET http://localhost:8080/dynamic/revise
+     * <p>
+     * 再一次调用查询的时候，结果为：
+     * slaveBetaDynamic
+     * slaveBeta
+     * slaveGamma
+     */
     @GetMapping("/revise")
     public void terminateDataSource() {
         dataSourceRefresher.refreshDataSource();

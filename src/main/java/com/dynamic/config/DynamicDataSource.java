@@ -1,5 +1,6 @@
 package com.dynamic.config;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -22,13 +23,13 @@ public class DynamicDataSource implements DataSource {
     /**
      * set the new data source and return the previous one
      */
-    public DataSource setDataSource(String dataSourceKey, DataSource newDataSource) {
+    public HikariDataSource setAndGetDataSource(String dataSourceKey, DataSource newDataSource) {
         DataSource oldDataSource = dataSourceAtomicReference.get(dataSourceKey);
         dataSourceAtomicReference.put(dataSourceKey, newDataSource);
-        return oldDataSource;
+        return (HikariDataSource) oldDataSource;
     }
 
-    public ConcurrentHashMap<String, DataSource> getDataSourceAtomicReference(){
+    public ConcurrentHashMap<String, DataSource> getDataSourceAtomicReference() {
         return dataSourceAtomicReference;
     }
 

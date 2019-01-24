@@ -1,9 +1,13 @@
 package com.dynamic.service;
 
-import com.dynamic.config.DynamicRoutingDataSource;
+import com.dynamic.common.DataSourceKey;
+import com.dynamic.utils.DataSourceManager;
+import com.dynamic.config.DynamicDataSource;
 import com.dynamic.utils.ApplicationContextHolder;
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +25,9 @@ public class DataSourceRefresher {
 
     private static final Logger logger = LoggerFactory.getLogger(DataSourceRefresher.class);
 
+    @Autowired
+    private DataSourceManager dataSourceManager;
+
     @Bean("master")
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
@@ -29,17 +36,16 @@ public class DataSourceRefresher {
     }
 
     public void refreshDataSource() {
-        logger.info("Refreshing data source");
+        logger.info("Refreshing data source starting...");
 
         //获取context
-        DynamicRoutingDataSource dynamicDataSource = ApplicationContextHolder.getBean("dynamicDataSourceConfig");
+        DynamicDataSource dynamicDataSource = ApplicationContextHolder.getBean("dynamicDataSource");
 
+        // 覆盖原有的dataSource
+        HikariDataSource oldDataSource = dynamicDataSource.setAndGetDataSource(DataSourceKey.slaveAlpha.name(),dataSourceManager.dataSource());
 
-
-//        ConcurrentHashMap<String, DataSource> dataSourceConcurrentHashMap = dynamicDataSource.getDataSourceAtomicReference();
-//
-//        dataSourceConcurrentHashMap.forEach((k, v) -> {
-//            System.out.println("key: " + k + " value: " + v);
-//        });
+        // 关闭原有连接
+        dataSourceManager.asyncTerminate(oldDataSource);
+        logger.info("Refreshing data source success...");
     }
 }

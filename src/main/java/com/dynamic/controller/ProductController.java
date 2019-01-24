@@ -31,6 +31,9 @@ public class ProductController {
 
     /**
      * Get product by id
+     *
+     * curl -X GET http://localhost:8080/product/1
+     *
      */
     @GetMapping("/{id}")
     public CommonResponse getProduct(@PathVariable("id") Long productId) {

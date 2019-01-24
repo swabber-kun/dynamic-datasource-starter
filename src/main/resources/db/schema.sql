@@ -34,3 +34,13 @@ CREATE TABLE product_slave_gamma.product(
   price DOUBLE(10,2) NOT NULL DEFAULT 0
 );
 INSERT INTO product_slave_gamma.product (name, price) VALUES('slaveGamma', '1');
+
+
+DROP DATABASE IF EXISTS product_slave_beta_dynamic;
+CREATE DATABASE product_slave_beta_dynamic;
+CREATE TABLE product_slave_beta_dynamic.product(
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  price DOUBLE(10,2) NOT NULL DEFAULT 0
+);
+INSERT INTO product_slave_beta_dynamic.product (name, price) VALUES('slaveBetaDynamic', '1');
