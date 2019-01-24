@@ -11,6 +11,4 @@ public class DataSourceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DataSourceApplication.class, args);
 	}
-
 }
-

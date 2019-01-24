@@ -73,8 +73,4 @@ public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
             userMasterDataSource();
         }
     }
-
-    public void refreshDataSource(){
-        logger.info("Refreshing data source");
-    }
 }

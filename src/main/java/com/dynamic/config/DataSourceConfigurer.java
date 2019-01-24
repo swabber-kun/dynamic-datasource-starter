@@ -1,6 +1,7 @@
 package com.dynamic.config;
 
 import com.dynamic.common.DataSourceKey;
+import com.dynamic.utils.DataSourceManager;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -21,7 +22,7 @@ import java.util.Map;
  *
  * @author jibingkun
  */
-@Configuration
+@Configuration(value = "DataSourceConfigurer")
 public class DataSourceConfigurer {
 
     /**
@@ -35,6 +36,21 @@ public class DataSourceConfigurer {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
     public DataSource master() {
+
+//        HikariConfig config = new HikariConfig();
+//        config.setPoolName("master");
+//        config.setUsername("root");
+//        config.setPassword("root");
+//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_master?useSSL=false");
+//        config.setDriverClassName("com.mysql.jdbc.Driver");
+//        return new HikariDataSource(config);
+//
+//        return DataSourceBuilder.create()
+//                .username("root")
+//                .password("root")
+//                .url("jdbc:mysql://127.0.0.1:3006/product_master?useSSL=false")
+//                .driverClassName("com.mysql.jdbc.Driver")
+//                .build();
         return DataSourceBuilder.create().build();
     }
 
@@ -46,6 +62,22 @@ public class DataSourceConfigurer {
     @Bean("slaveAlpha")
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave-alpha")
     public DataSource slaveAlpha() {
+
+//        return DataSourceBuilder.create()
+//                .username("root")
+//                .password("root")
+//                .url("jdbc:mysql://127.0.0.1:3006/product_slave_alpha?useSSL=false")
+//                .driverClassName("com.mysql.jdbc.Driver")
+//                .build();
+
+
+//        HikariConfig config = new HikariConfig();
+//        config.setPoolName("slaveAlpha");
+//        config.setUsername("root");
+//        config.setPassword("root");
+//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_slave_alpha?useSSL=false");
+//        config.setDriverClassName("com.mysql.jdbc.Driver");
+//        return new HikariDataSource(config);
         return DataSourceBuilder.create().build();
     }
 
@@ -57,6 +89,23 @@ public class DataSourceConfigurer {
     @Bean("slaveBeta")
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave-beta")
     public DataSource slaveBeta() {
+
+//        return DataSourceBuilder.create()
+//                .username("root")
+//                .password("root")
+//                .url("jdbc:mysql://127.0.0.1:3006/product_slave_beta?useSSL=false")
+//                .driverClassName("com.mysql.jdbc.Driver")
+//                .build();
+
+
+//        HikariConfig config = new HikariConfig();
+//        config.setPoolName("slaveBeta");
+//        config.setUsername("root");
+//        config.setPassword("root");
+//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_slave_beta?useSSL=false");
+//        config.setDriverClassName("com.mysql.jdbc.Driver");
+//        return new HikariDataSource(config);
+
         return DataSourceBuilder.create().build();
     }
 
@@ -68,6 +117,22 @@ public class DataSourceConfigurer {
     @Bean("slaveGamma")
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave-gamma")
     public DataSource slaveGamma() {
+
+//        return DataSourceBuilder.create()
+//                .username("root")
+//                .password("root")
+//                .url("jdbc:mysql://127.0.0.1:3006/product_slave_gamma?useSSL=false")
+//                .driverClassName("com.mysql.jdbc.Driver")
+//                .build();
+
+//        HikariConfig config = new HikariConfig();
+//        config.setPoolName("slaveGamma");
+//        config.setUsername("root");
+//        config.setPassword("root");
+//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_slave_gamma?useSSL=false");
+//        config.setDriverClassName("com.mysql.jdbc.Driver");
+//        return new HikariDataSource(config);
+
         return DataSourceBuilder.create().build();
     }
 
@@ -76,16 +141,34 @@ public class DataSourceConfigurer {
      *
      * @return the data source
      */
-    @Bean("dynamicDataSource")
-    public DataSource dynamicDataSource() {
+    @Bean("dynamicDataSourceConfig")
+    public DataSource dynamicDataSourceConfig() {
 
         DynamicRoutingDataSource dynamicRoutingDataSource = new DynamicRoutingDataSource();
 
+        DataSourceManager dataSourceManager = new DataSourceManager();
+
         Map<Object, Object> dataSourceMap = new HashMap<>(6);
-        dataSourceMap.put(DataSourceKey.master.name(), master());
-        dataSourceMap.put(DataSourceKey.slaveAlpha.name(), slaveAlpha());
-        dataSourceMap.put(DataSourceKey.slaveBeta.name(), slaveBeta());
-        dataSourceMap.put(DataSourceKey.slaveGamma.name(), slaveGamma());
+
+        // mapping of thr master datasource
+        DynamicDataSource dynamicMasterDataSource = new DynamicDataSource();
+        dynamicMasterDataSource.setAndGetDataSource(DataSourceKey.master.name(), master());
+        dataSourceMap.put(DataSourceKey.master.name(), dynamicMasterDataSource);
+
+        // mapping of thr slaveAlpha datasource
+        DynamicDataSource dynamicSlaveAlphaDataSource = new DynamicDataSource();
+        dynamicSlaveAlphaDataSource.setAndGetDataSource(DataSourceKey.slaveAlpha.name(), slaveAlpha());
+        dataSourceMap.put(DataSourceKey.slaveAlpha.name(), dynamicSlaveAlphaDataSource);
+
+        // mapping of thr slaveBeta datasource
+        DynamicDataSource dynamicSlaveBetaDataSource = new DynamicDataSource();
+        dynamicSlaveBetaDataSource.setAndGetDataSource(DataSourceKey.slaveBeta.name(), slaveBeta());
+        dataSourceMap.put(DataSourceKey.slaveBeta.name(), dynamicSlaveBetaDataSource);
+
+        // mapping of thr slaveGamma datasource
+        DynamicDataSource dynamicSlaveGammaDataSource = new DynamicDataSource();
+        dynamicSlaveGammaDataSource.setAndGetDataSource(DataSourceKey.slaveGamma.name(), slaveGamma());
+        dataSourceMap.put(DataSourceKey.slaveGamma.name(), dynamicSlaveGammaDataSource);
 
         // 将 master 数据源作为默认指定的数据源
         dynamicRoutingDataSource.setDefaultTargetDataSource(master());
@@ -121,7 +204,7 @@ public class DataSourceConfigurer {
 
 
         // 配置数据源，此处配置为关键配置，如果没有将 dynamicDataSource 作为数据源则不能实现切换
-        sqlSessionFactoryBean.setDataSource(dynamicDataSource());
+        sqlSessionFactoryBean.setDataSource(dynamicDataSourceConfig());
         return sqlSessionFactoryBean;
     }
 
@@ -132,6 +215,6 @@ public class DataSourceConfigurer {
      */
     @Bean
     public PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dynamicDataSource());
+        return new DataSourceTransactionManager(dynamicDataSourceConfig());
     }
 }
