@@ -36,21 +36,6 @@ public class DataSourceConfigurer {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.hikari.master")
     public DataSource master() {
-
-//        HikariConfig config = new HikariConfig();
-//        config.setPoolName("master");
-//        config.setUsername("root");
-//        config.setPassword("root");
-//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_master?useSSL=false");
-//        config.setDriverClassName("com.mysql.jdbc.Driver");
-//        return new HikariDataSource(config);
-//
-//        return DataSourceBuilder.create()
-//                .username("root")
-//                .password("root")
-//                .url("jdbc:mysql://127.0.0.1:3006/product_master?useSSL=false")
-//                .driverClassName("com.mysql.jdbc.Driver")
-//                .build();
         return DataSourceBuilder.create().build();
     }
 
@@ -62,22 +47,6 @@ public class DataSourceConfigurer {
     @Bean("slaveAlpha")
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave-alpha")
     public DataSource slaveAlpha() {
-
-//        return DataSourceBuilder.create()
-//                .username("root")
-//                .password("root")
-//                .url("jdbc:mysql://127.0.0.1:3006/product_slave_alpha?useSSL=false")
-//                .driverClassName("com.mysql.jdbc.Driver")
-//                .build();
-
-
-//        HikariConfig config = new HikariConfig();
-//        config.setPoolName("slaveAlpha");
-//        config.setUsername("root");
-//        config.setPassword("root");
-//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_slave_alpha?useSSL=false");
-//        config.setDriverClassName("com.mysql.jdbc.Driver");
-//        return new HikariDataSource(config);
         return DataSourceBuilder.create().build();
     }
 
@@ -89,23 +58,6 @@ public class DataSourceConfigurer {
     @Bean("slaveBeta")
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave-beta")
     public DataSource slaveBeta() {
-
-//        return DataSourceBuilder.create()
-//                .username("root")
-//                .password("root")
-//                .url("jdbc:mysql://127.0.0.1:3006/product_slave_beta?useSSL=false")
-//                .driverClassName("com.mysql.jdbc.Driver")
-//                .build();
-
-
-//        HikariConfig config = new HikariConfig();
-//        config.setPoolName("slaveBeta");
-//        config.setUsername("root");
-//        config.setPassword("root");
-//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_slave_beta?useSSL=false");
-//        config.setDriverClassName("com.mysql.jdbc.Driver");
-//        return new HikariDataSource(config);
-
         return DataSourceBuilder.create().build();
     }
 
@@ -117,22 +69,6 @@ public class DataSourceConfigurer {
     @Bean("slaveGamma")
     @ConfigurationProperties(prefix = "spring.datasource.hikari.slave-gamma")
     public DataSource slaveGamma() {
-
-//        return DataSourceBuilder.create()
-//                .username("root")
-//                .password("root")
-//                .url("jdbc:mysql://127.0.0.1:3006/product_slave_gamma?useSSL=false")
-//                .driverClassName("com.mysql.jdbc.Driver")
-//                .build();
-
-//        HikariConfig config = new HikariConfig();
-//        config.setPoolName("slaveGamma");
-//        config.setUsername("root");
-//        config.setPassword("root");
-//        config.setJdbcUrl("jdbc:mysql://127.0.0.1:3006/product_slave_gamma?useSSL=false");
-//        config.setDriverClassName("com.mysql.jdbc.Driver");
-//        return new HikariDataSource(config);
-
         return DataSourceBuilder.create().build();
     }
 
